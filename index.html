@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon-192x192.png">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+  <link href="[https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap](https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap)" rel="stylesheet">
   <!-- QRコード生成ライブラリの読み込み -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="[https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js](https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js)"></script>
   <style>
     /* CSS変数でライトモードとダークモードのカラーを定義 */
     :root {
@@ -29,8 +29,8 @@
       --ok-btn-text: var(--key-orange-text);
       --header-color: #0d47a1;
       --link-color: #1976d2;
-      --message-box-bg: #fff;
-      --message-box-text: #333;
+      --notification-bg: rgba(0, 0, 0, 0.7);
+      --notification-text: #ffffff;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -52,8 +52,8 @@
         --ok-btn-text: var(--key-orange-text);
         --header-color: #64b5f6;
         --link-color: #90caf9;
-        --message-box-bg: #333;
-        --message-box-text: #fff;
+        --notification-bg: rgba(255, 255, 255, 0.8);
+        --notification-text: #333;
       }
     }
 
@@ -142,8 +142,7 @@
     }
     /* ボタンのカラーリング */
     .key.num { background: var(--key-num-bg); color: var(--key-num-text); }
-    .key.hk { background: var(--key-special-bg); color: var(--key-special-text); }
-    .key.ctrl, .key.back { background: var(--key-special-bg); color: var(--key-special-text); }
+    .key.hk, .key.ctrl, .key.back { background: var(--key-special-bg); color: var(--key-special-text); }
     #ok-btn {
       margin-top: 10px;
       padding: 12px 24px;
@@ -161,35 +160,21 @@
       transform: scale(0.97);
     }
 
-    /* カスタムメッセージボックスのスタイル */
-    #message-box {
+    /* 通知バーのスタイル */
+    #notification-bar {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: var(--message-box-bg);
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      padding: 12px 20px;
+      background: var(--notification-bg);
+      color: var(--notification-text);
+      border-radius: 25px;
+      font-size: 1.1em;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
       z-index: 100;
-      text-align: center;
-      max-width: 80vw;
-      border: 1px solid var(--body-text);
-      display: none; /* 初期は非表示 */
-    }
-    #message-box-text {
-      font-size: 1.2em;
-      margin-bottom: 20px;
-      color: var(--message-box-text);
-    }
-    #message-box-ok-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 20px;
-      background: var(--key-orange-bg);
-      color: var(--key-orange-text);
-      font-weight: bold;
-      cursor: pointer;
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -227,20 +212,17 @@
     <button id="ok-btn" onclick="generateQR()">QRコード作成</button>
   </main>
   
-  <!-- カスタムメッセージボックスのHTML -->
-  <div id="message-box">
-    <p id="message-box-text"></p>
-    <button id="message-box-ok-btn" onclick="hideModal()">OK</button>
-  </div>
+  <!-- 新しい通知バー -->
+  <div id="notification-bar"></div>
 
   <script>
-    const prefix = "https://jes24.jp/?e=";
+    const prefix = "[https://jes24.jp/?e=](https://jes24.jp/?e=)";
     const display = document.getElementById("display");
     const qrContainer = document.getElementById("qrcode");
     const resultText = document.getElementById("result");
-    const messageBox = document.getElementById("message-box");
-    const messageBoxText = document.getElementById("message-box-text");
+    const notificationBar = document.getElementById("notification-bar");
     let inputValue = "";
+    let notificationTimeout;
 
     // QRコード生成ライブラリのインスタンスを生成
     const qrcode = new QRCode(qrContainer, {
@@ -248,31 +230,30 @@
       height: 280
     });
 
-    // カスタムメッセージボックスを表示する関数
-    function showModal(message) {
-      messageBoxText.textContent = message;
-      messageBox.style.display = "block";
-    }
-
-    // カスタムメッセージボックスを非表示にする関数
-    function hideModal() {
-      messageBox.style.display = "none";
+    // 通知バーを表示する関数
+    function showNotification(message) {
+      clearTimeout(notificationTimeout);
+      notificationBar.textContent = message;
+      notificationBar.style.opacity = 1;
+      notificationTimeout = setTimeout(() => {
+        notificationBar.style.opacity = 0;
+      }, 2000); // 2秒後に非表示
     }
 
     function pressKey(key) {
       if (inputValue === "") {
         if (key !== "HK" && key !== "HK-R") {
-          showModal("最初は HK または HK-R を選んでください");
+          showNotification("最初は HK または HK-R を選んでください");
           return;
         }
       } else {
         if ((inputValue.startsWith("HK") && key === "HK-R") ||
             (inputValue.startsWith("HK-R") && key === "HK")) {
-          showModal("HK と HK-R は同時に使えません");
+          showNotification("HK と HK-R は同時に使えません");
           return;
         }
         if (key === "HK" || key === "HK-R") {
-          showModal("HK/HK-R は最初のみ入力できます");
+          showNotification("HK/HK-R は最初のみ入力できます");
           return;
         }
       }
@@ -301,7 +282,7 @@
     // QRコードを生成し表示する関数
     function generateQR() {
       if (!inputValue) {
-        showModal("入力が空です");
+        showNotification("入力が空です");
         return;
       }
       const url = prefix + inputValue;
