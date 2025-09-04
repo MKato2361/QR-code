@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>QRコード生成</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.png">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2em; }
+    #qrcode { margin: 20px auto; }
+    input { padding: 8px; width: 250px; }
+    button { padding: 8px 16px; margin-left: 5px; }
+  </style>
+</head>
+<body>
+  <h1>QRコード生成</h1>
+  <p>任意文字列を入力してください</p>
+  <input type="text" id="suffix" placeholder="任意の文字列">
+  <button onclick="makeCode()">生成</button>
+
+  <div id="qrcode"></div>
+  <p id="result"></p>
+
+  <script>
+    const prefix = "https://jes24.jp/?e=HK"; // 固定部分
+    const qrcode = new QRCode(document.getElementById("qrcode"), {
+      width: 256,
+      height: 256
+    });
+
+    function makeCode() {
+      const suffix = document.getElementById("suffix").value;
+      const url = prefix + suffix;
+      qrcode.clear();
+      qrcode.makeCode(url);
+      document.getElementById("result").innerText = url;
+    }
+
+    // PWA: Service Worker登録
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log("SW登録成功", reg))
+        .catch(err => console.log("SW登録失敗", err));
+    }
+  </script>
+</body>
+</html>
