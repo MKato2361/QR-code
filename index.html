@@ -5,29 +5,91 @@
   <title>QRコード生成</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon.png">
+  <link rel="icon" href="icon-192x192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 2em; }
-    #qrcode { margin: 20px auto; }
-    input { padding: 8px; width: 250px; }
-    button { padding: 8px 16px; margin-left: 5px; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #2196f3, #21cbf3);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1.5em;
+      font-size: 1.4em;
+      font-weight: 700;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 500px;
+      padding: 1em;
+    }
+    input {
+      padding: 12px;
+      width: 70%;
+      border: none;
+      border-radius: 25px;
+      margin-bottom: 10px;
+      font-size: 1em;
+      outline: none;
+      text-align: center;
+    }
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 25px;
+      background-color: #fff;
+      color: #2196f3;
+      font-weight: 700;
+      font-size: 1em;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+    #qrcode {
+      margin: 20px 0;
+    }
+    canvas {
+      width: 80vw !important;
+      max-width: 300px !important;
+      height: auto !important;
+    }
+    #result {
+      font-size: 0.9em;
+      word-wrap: break-word;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <h1>QRコード生成</h1>
-  <p>任意文字列を入力してください</p>
-  <input type="text" id="suffix" placeholder="任意の文字列">
-  <button onclick="makeCode()">生成</button>
-
-  <div id="qrcode"></div>
-  <p id="result"></p>
+  <header>QRコード生成</header>
+  <main>
+    <input type="text" id="suffix" placeholder="任意の文字列を入力">
+    <button onclick="makeCode()">生成</button>
+    <div id="qrcode"></div>
+    <p id="result"></p>
+  </main>
 
   <script>
     const prefix = "https://jes24.jp/?e=HK"; // 固定部分
     const qrcode = new QRCode(document.getElementById("qrcode"), {
-      width: 256,
-      height: 256
+      width: 300,
+      height: 300
     });
 
     function makeCode() {
