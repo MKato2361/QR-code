@@ -1,20 +1,14 @@
 {
-  "name": "管理番号QRコード生成アプリ",
+  "name": "管理番号QRコード生成wキーボード",
   "short_name": "管理番号QR生成",
-  "start_url": "./index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#2196f3",
-  "description": "任意文字列からQRコードを生成するPWA Webアプリ",
+  "description": "任意文字列からQRコードを生成するWebアプリ",
   "icons": [
     {
-      "src": "icon-192×192.png",
+      "src": "icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512×512.png",
-      "sizes": "512x512",
       "type": "image/png"
     }
   ]
