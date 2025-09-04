@@ -1,6 +1,6 @@
 {
-  "name": "QRコード生成アプリ",
-  "short_name": "QR生成",
+  "name": "管理番号QRコード生成アプリ",
+  "short_name": "管理番号QR生成",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
