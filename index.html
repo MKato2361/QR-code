@@ -232,7 +232,6 @@
     const keyboard = document.querySelector('.keyboard');
     const okButton = document.getElementById('ok-btn');
     const keys = document.querySelectorAll('.key');
-    const clrKey = document.querySelector('[data-key="clear"]');
     
     let inputValue = "";
     let notificationTimeout;
@@ -253,6 +252,13 @@
         notificationBar.style.opacity = 0;
       }, 2000); // 2秒後に非表示
     }
+    
+    // 触覚フィードバックを生成する関数
+    function vibrate() {
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(50); // 50ミリ秒の短い振動
+      }
+    }
 
     // すべてのボタンを有効化/無効化する関数
     function toggleButtons(enable) {
@@ -271,6 +277,9 @@
         return;
       }
       
+      // 触覚フィードバックを生成
+      vibrate();
+
       // ユーザー入力に応じたキー処理
       if (key === 'backspace') {
         inputValue = inputValue.slice(0, -1);
