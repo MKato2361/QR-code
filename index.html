@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon-192x192.png">
-  <link href="[https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap](https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap)" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap" rel="stylesheet">
   <!-- QRコード生成ライブラリの読み込み -->
-  <script src="[https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js](https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js)"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     /* CSS変数でライトモードとダークモードのカラーを定義 */
     :root {
@@ -191,36 +191,38 @@
 
     <!-- 電卓風キーボード -->
     <div class="keyboard">
-      <div class="key hk" onclick="pressKey('HK')">HK</div>
-      <div class="key hk" onclick="pressKey('HK-R')">HK-R</div>
-      <div class="key ctrl" onclick="clearInput()">CLR</div>
-      <div class="key num" onclick="pressKey('7')">7</div>
-      <div class="key num" onclick="pressKey('8')">8</div>
-      <div class="key num" onclick="pressKey('9')">9</div>
-      <div class="key num" onclick="pressKey('4')">4</div>
-      <div class="key num" onclick="pressKey('5')">5</div>
-      <div class="key num" onclick="pressKey('6')">6</div>
-      <div class="key num" onclick="pressKey('1')">1</div>
-      <div class="key num" onclick="pressKey('2')">2</div>
-      <div class="key num" onclick="pressKey('3')">3</div>
-      <div class="key num" onclick="pressKey('0')">0</div>
-      <div class="key num" onclick="pressKey('-')">-</div>
-      <div class="key back" onclick="backspace()">⌫</div>
+      <div class="key hk" data-key="HK">HK</div>
+      <div class="key hk" data-key="HK-R">HK-R</div>
+      <div class="key ctrl" data-key="clear">CLR</div>
+      <div class="key num" data-key="7">7</div>
+      <div class="key num" data-key="8">8</div>
+      <div class="key num" data-key="9">9</div>
+      <div class="key num" data-key="4">4</div>
+      <div class="key num" data-key="5">5</div>
+      <div class="key num" data-key="6">6</div>
+      <div class="key num" data-key="1">1</div>
+      <div class="key num" data-key="2">2</div>
+      <div class="key num" data-key="3">3</div>
+      <div class="key num" data-key="0">0</div>
+      <div class="key num" data-key="-">-</div>
+      <div class="key back" data-key="backspace">⌫</div>
     </div>
 
     <!-- ボタン -->
-    <button id="ok-btn" onclick="generateQR()">QRコード作成</button>
+    <button id="ok-btn">QRコード作成</button>
   </main>
   
   <!-- 新しい通知バー -->
   <div id="notification-bar"></div>
 
   <script>
-    const prefix = "[https://jes24.jp/?e=](https://jes24.jp/?e=)";
+    const prefix = "https://jes24.jp/?e=";
     const display = document.getElementById("display");
     const qrContainer = document.getElementById("qrcode");
     const resultText = document.getElementById("result");
     const notificationBar = document.getElementById("notification-bar");
+    const keyboard = document.querySelector('.keyboard');
+    const okButton = document.getElementById('ok-btn');
     let inputValue = "";
     let notificationTimeout;
 
@@ -241,38 +243,36 @@
     }
 
     function pressKey(key) {
-      if (inputValue === "") {
-        if (key !== "HK" && key !== "HK-R") {
-          showNotification("最初は HK または HK-R を選んでください");
-          return;
-        }
+      // ユーザー入力に応じたキー処理
+      if (key === 'backspace') {
+        inputValue = inputValue.slice(0, -1);
+      } else if (key === 'clear') {
+        inputValue = "";
       } else {
-        if ((inputValue.startsWith("HK") && key === "HK-R") ||
-            (inputValue.startsWith("HK-R") && key === "HK")) {
-          showNotification("HK と HK-R は同時に使えません");
-          return;
+        // キー入力のバリデーション
+        if (inputValue === "") {
+          if (key !== "HK" && key !== "HK-R") {
+            showNotification("最初は HK または HK-R を選んでください");
+            return;
+          }
+        } else {
+          if ((inputValue.startsWith("HK") && key === "HK-R") ||
+              (inputValue.startsWith("HK-R") && key === "HK")) {
+            showNotification("HK と HK-R は同時に使えません");
+            return;
+          }
+          if (key === "HK" || key === "HK-R") {
+            showNotification("HK/HK-R は最初のみ入力できます");
+            return;
+          }
         }
-        if (key === "HK" || key === "HK-R") {
-          showNotification("HK/HK-R は最初のみ入力できます");
-          return;
-        }
+        inputValue += key;
       }
-      inputValue += key;
-      updateDisplay();
-    }
-
-    function backspace() {
-      inputValue = inputValue.slice(0, -1);
+      
       updateDisplay();
       if (inputValue === "") {
         hideQR();
       }
-    }
-
-    function clearInput() {
-      inputValue = "";
-      updateDisplay();
-      hideQR();
     }
 
     function updateDisplay() {
@@ -300,6 +300,27 @@
       resultText.innerText = "";
     }
 
+    // イベントリスナーの追加
+    // タッチデバイスとマウスデバイスの両方に対応するため、touchstartとmousedownの両方を使用
+    keyboard.addEventListener('touchstart', (e) => {
+      e.preventDefault(); // デフォルトの遅延を防ぐ
+      const keyElement = e.target.closest('.key');
+      if (keyElement) {
+        pressKey(keyElement.dataset.key);
+      }
+    }, { passive: false }); // passive: falseでpreventDefaultを有効にする
+
+    keyboard.addEventListener('mousedown', (e) => {
+      const keyElement = e.target.closest('.key');
+      if (keyElement) {
+        pressKey(keyElement.dataset.key);
+      }
+    });
+
+    okButton.addEventListener('touchstart', generateQR);
+    okButton.addEventListener('mousedown', generateQR);
+
+    // service-worker.jsの登録 (元のコードからの移植)
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
         .then(reg => console.log("SW登録成功", reg))
