@@ -6,28 +6,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon-192x192.png">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link href="[https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap](https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap)" rel="stylesheet">
+  <script src="[https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js](https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js)"></script>
   <style>
+    /* CSS変数でライトモードとダークモードのカラーを定義 */
+    :root {
+      /* ライトモード */
+      --body-bg: #e0e0e0;
+      --body-text: #1c1c1c;
+      --main-bg: #e0e0e0;
+      --display-bg: #e3e3e3;
+      --display-text: #1c1c1c;
+      --key-num-bg: #fafafa;
+      --key-num-text: #1c1c1c;
+      --key-special-bg: #d4d4d2;
+      --key-special-text: #1c1c1c;
+      --key-orange-bg: #ff9500;
+      --key-orange-text: #ffffff;
+      --shadow-color: rgba(0, 0, 0, 0.15);
+      --ok-btn-bg: var(--key-orange-bg);
+      --ok-btn-text: var(--key-orange-text);
+      --header-color: #0d47a1;
+      --link-color: #1976d2;
+      --message-box-bg: #fff;
+      --message-box-text: #333;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* ダークモード */
+        --body-bg: #000;
+        --body-text: #f0f0f0;
+        --main-bg: #000;
+        --display-bg: #2a2a2a;
+        --display-text: #ffffff;
+        --key-num-bg: #4a4a4a;
+        --key-num-text: #ffffff;
+        --key-special-bg: #6a6a6a;
+        --key-special-text: #ffffff;
+        --key-orange-bg: #ff9500;
+        --key-orange-text: #ffffff;
+        --shadow-color: rgba(255, 255, 255, 0.15);
+        --ok-btn-bg: var(--key-orange-bg);
+        --ok-btn-text: var(--key-orange-text);
+        --header-color: #64b5f6;
+        --link-color: #90caf9;
+        --message-box-bg: #333;
+        --message-box-text: #fff;
+      }
+    }
+
     body {
       font-family: 'Roboto', sans-serif;
       text-align: center;
       margin: 0;
       padding: 0;
       width: 100%;
-      overflow-x: hidden; /* 横スクロール禁止 */
-      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-      color: #333;
+      overflow-x: hidden;
+      background: var(--body-bg);
+      color: var(--body-text);
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
     }
     header {
       padding: 1.5em;
       font-size: 1.6em;
       font-weight: 700;
-      color: #1565c0;
+      color: var(--header-color);
     }
     main {
       flex: 1;
@@ -37,6 +85,8 @@
       width: 100%;
       max-width: 500px;
       padding: 1em;
+      background: var(--main-bg);
+      transition: background-color 0.3s;
     }
     #qrcode {
       margin: 10px 0 10px 0;
@@ -52,7 +102,7 @@
       word-wrap: break-word;
       margin-top: 8px;
       margin-bottom: 20px;
-      color: #333;
+      color: var(--body-text);
       display: none; /* 初期は非表示 */
     }
     #display {
@@ -61,10 +111,12 @@
       border-radius: 12px;
       margin-bottom: 20px;
       font-size: 1.4em;
-      background: #fff;
-      color: #000;
+      background: var(--display-bg);
+      color: var(--display-text);
       text-align: center;
       min-height: 1.8em;
+      box-shadow: 0 2px 6px var(--shadow-color);
+      transition: background-color 0.3s, color 0.3s;
     }
     .keyboard {
       display: grid;
@@ -72,7 +124,7 @@
       gap: 10px;
       margin-bottom: 25px;
       width: 95%;
-      max-width: 500px;   /* mainと同じ上限 */
+      max-width: 500px;
     }
     .key {
       padding: 15px;
@@ -80,33 +132,63 @@
       font-weight: bold;
       font-size: 1.6em;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 6px var(--shadow-color);
       transition: transform 0.1s;
       user-select: none;
     }
     .key:active {
       transform: scale(0.95);
     }
-    /* 色分け（淡色） */
-    .key.num { background: #ffffff; color: #1565c0; }
-    .key.hk { background: #ffe0b2; color: #e65100; }
-    .key.ctrl { background: #ffcdd2; color: #b71c1c; }
-    .key.back { background: #e1bee7; color: #4a148c; }
+    /* ボタンのカラーリング */
+    .key.num { background: var(--key-num-bg); color: var(--key-num-text); }
+    .key.hk { background: var(--key-special-bg); color: var(--key-special-text); }
+    .key.ctrl, .key.back { background: var(--key-special-bg); color: var(--key-special-text); }
     #ok-btn {
       margin-top: 10px;
       padding: 12px 24px;
       border-radius: 30px;
       border: none;
-      background: #c8e6c9;
-      color: #1b5e20;
+      background: var(--ok-btn-bg);
+      color: var(--ok-btn-text);
       font-weight: bold;
       font-size: 1.4em;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 6px var(--shadow-color);
       transition: transform 0.1s;
     }
     #ok-btn:active {
       transform: scale(0.97);
+    }
+
+    /* カスタムメッセージボックスのスタイル */
+    #message-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--message-box-bg);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 100;
+      text-align: center;
+      max-width: 80vw;
+      border: 1px solid var(--body-text);
+      display: none; /* 初期は非表示 */
+    }
+    #message-box-text {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      color: var(--message-box-text);
+    }
+    #message-box-ok-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      background: var(--key-orange-bg);
+      color: var(--key-orange-text);
+      font-weight: bold;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -143,12 +225,20 @@
     <!-- ボタン -->
     <button id="ok-btn" onclick="generateQR()">QRコード作成</button>
   </main>
+  
+  <!-- カスタムメッセージボックスのHTML -->
+  <div id="message-box">
+    <p id="message-box-text"></p>
+    <button id="message-box-ok-btn" onclick="hideModal()">OK</button>
+  </div>
 
   <script>
-    const prefix = "https://jes24.jp/?e=";
+    const prefix = "[https://jes24.jp/?e=](https://jes24.jp/?e=)";
     const display = document.getElementById("display");
     const qrContainer = document.getElementById("qrcode");
     const resultText = document.getElementById("result");
+    const messageBox = document.getElementById("message-box");
+    const messageBoxText = document.getElementById("message-box-text");
     let inputValue = "";
 
     const qrcode = new QRCode(qrContainer, {
@@ -156,20 +246,31 @@
       height: 280
     });
 
+    // カスタムメッセージボックスを表示する関数
+    function showModal(message) {
+      messageBoxText.textContent = message;
+      messageBox.style.display = "block";
+    }
+
+    // カスタムメッセージボックスを非表示にする関数
+    function hideModal() {
+      messageBox.style.display = "none";
+    }
+
     function pressKey(key) {
       if (inputValue === "") {
         if (key !== "HK" && key !== "HK-R") {
-          alert("最初は HK または HK-R を選んでください");
+          showModal("最初は HK または HK-R を選んでください");
           return;
         }
       } else {
         if ((inputValue.startsWith("HK") && key === "HK-R") ||
             (inputValue.startsWith("HK-R") && key === "HK")) {
-          alert("HK と HK-R は同時に使えません");
+          showModal("HK と HK-R は同時に使えません");
           return;
         }
         if (key === "HK" || key === "HK-R") {
-          alert("HK/HK-R は最初のみ入力できます");
+          showModal("HK/HK-R は最初のみ入力できます");
           return;
         }
       }
@@ -197,7 +298,7 @@
 
     function generateQR() {
       if (!inputValue) {
-        alert("入力が空です");
+        showModal("入力が空です");
         return;
       }
       const url = prefix + inputValue;
@@ -222,3 +323,4 @@
   </script>
 </body>
 </html>
+
