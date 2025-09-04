@@ -307,6 +307,11 @@
             showNotification("HK-R の後に - は入力できません");
             return;
           }
+          // すでにハイフンがある場合、'-'を押せないようにする
+          if (inputValue.includes("-") && key === "-") {
+            showNotification("ハイフンは1つしか入力できません");
+            return;
+          }
         }
         inputValue += key;
       }
