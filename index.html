@@ -302,6 +302,11 @@
             showNotification("HK/HK-R は最初のみ入力できます");
             return;
           }
+          // HK-Rが選択されている場合、'-'を押せないようにする
+          if (inputValue.startsWith("HK-R") && key === "-") {
+            showNotification("HK-R の後に - は入力できません");
+            return;
+          }
         }
         inputValue += key;
       }
