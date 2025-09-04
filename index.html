@@ -77,16 +77,16 @@
   </style>
 </head>
 <body>
-  <header>QRコード生成</header>
+  <header>管理番号QRコード生成</header>
   <main>
-    <input type="text" id="suffix" placeholder="任意の文字列を入力">
-    <button onclick="makeCode()">生成</button>
+    <input type="text" id="suffix" placeholder="管理番号を入力">
+    <button onclick="makeCode()">QRコード作成</button>
     <div id="qrcode"></div>
     <p id="result"></p>
   </main>
 
   <script>
-    const prefix = "https://jes24.jp/?e=HK"; // 固定部分
+    const prefix = "https://jes24.jp/?e="; // 固定部分
     const qrcode = new QRCode(document.getElementById("qrcode"), {
       width: 300,
       height: 300
