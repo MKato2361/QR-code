@@ -1,0 +1,21 @@
+{
+  "name": "QRコード生成アプリ",
+  "short_name": "QR生成",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2196f3",
+  "description": "任意文字列からQRコードを生成するPWA Webアプリ",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
