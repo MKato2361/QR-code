@@ -5,7 +5,7 @@ self.addEventListener("install", e => {
         "./",
         "./index.html",
         "./manifest.json",
-        "./icon-192×192.png",
+        "./icon.png",
         "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
       ]);
     })
