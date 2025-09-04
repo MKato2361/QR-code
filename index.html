@@ -6,8 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon-192x192.png">
-  <link href="[https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap](https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap)" rel="stylesheet">
-  <script src="[https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js](https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js)"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+  <!-- QRコード生成ライブラリの読み込み -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     /* CSS変数でライトモードとダークモードのカラーを定義 */
     :root {
@@ -233,7 +234,7 @@
   </div>
 
   <script>
-    const prefix = "[https://jes24.jp/?e=](https://jes24.jp/?e=)";
+    const prefix = "https://jes24.jp/?e=";
     const display = document.getElementById("display");
     const qrContainer = document.getElementById("qrcode");
     const resultText = document.getElementById("result");
@@ -241,6 +242,7 @@
     const messageBoxText = document.getElementById("message-box-text");
     let inputValue = "";
 
+    // QRコード生成ライブラリのインスタンスを生成
     const qrcode = new QRCode(qrContainer, {
       width: 280,
       height: 280
@@ -296,6 +298,7 @@
       display.textContent = inputValue;
     }
 
+    // QRコードを生成し表示する関数
     function generateQR() {
       if (!inputValue) {
         showModal("入力が空です");
@@ -309,6 +312,7 @@
       resultText.innerText = url;
     }
 
+    // QRコードを非表示にする関数
     function hideQR() {
       qrContainer.style.display = "none";
       resultText.style.display = "none";
