@@ -159,6 +159,14 @@
     #ok-btn:active {
       transform: scale(0.97);
     }
+    
+    /* 無効化されたボタンのスタイル */
+    .key.disabled, #ok-btn.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      transform: none !important;
+      box-shadow: none !important;
+    }
 
     /* 通知バーのスタイル */
     #notification-bar {
@@ -223,8 +231,12 @@
     const notificationBar = document.getElementById("notification-bar");
     const keyboard = document.querySelector('.keyboard');
     const okButton = document.getElementById('ok-btn');
+    const keys = document.querySelectorAll('.key');
+    const clrKey = document.querySelector('[data-key="clear"]');
+    
     let inputValue = "";
     let notificationTimeout;
+    let isQRCodeVisible = false;
 
     // QRコード生成ライブラリのインスタンスを生成
     const qrcode = new QRCode(qrContainer, {
@@ -242,7 +254,23 @@
       }, 2000); // 2秒後に非表示
     }
 
+    // すべてのボタンを有効化/無効化する関数
+    function toggleButtons(enable) {
+      keys.forEach(key => {
+        if (key.dataset.key !== 'clear') {
+          key.classList.toggle('disabled', !enable);
+        }
+      });
+      okButton.classList.toggle('disabled', !enable);
+    }
+
     function pressKey(key) {
+      // QRコード表示中は、CLRキー以外は無視する
+      if (isQRCodeVisible && key !== 'clear') {
+        showNotification("CLRボタンでクリアしてください");
+        return;
+      }
+      
       // ユーザー入力に応じたキー処理
       if (key === 'backspace') {
         inputValue = inputValue.slice(0, -1);
@@ -291,6 +319,8 @@
       qrContainer.style.display = "block";
       resultText.style.display = "block";
       resultText.innerText = url;
+      isQRCodeVisible = true;
+      toggleButtons(false);
     }
 
     // QRコードを非表示にする関数
@@ -298,6 +328,8 @@
       qrContainer.style.display = "none";
       resultText.style.display = "none";
       resultText.innerText = "";
+      isQRCodeVisible = false;
+      toggleButtons(true);
     }
 
     // イベントリスナーの追加
