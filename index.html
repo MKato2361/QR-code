@@ -219,6 +219,9 @@
       <div class="key num" data-key="0">0</div>
       <div class="key num" data-key="-">-</div>
       <div class="key back" data-key="backspace">⌫</div>
+      <div class="key hk" data-key="HKP">HKP</div>
+      <div class="key hk" data-key="-I">-I</div>
+      <div class="key hk" data-key="IP">IP</div>
     </div>
 
     <!-- ボタン -->
@@ -278,7 +281,7 @@
     function pressKey(key) {
       // QRコード表示中は、CLRキー以外は無視する
       if (isQRCodeVisible && key !== 'clear') {
-        showNotification("CLRボタンでクリアしてください");
+        showNotification("CLR ボタンでクリアしてください");
         return;
       }
       
@@ -292,28 +295,40 @@
         inputValue = "";
       } else {
         // キー入力のバリデーション
+        const prefixKeys = ["HK", "HK-R", "HKP"];
+        const isPrefix = prefixKeys.includes(key);
+
+        // 末尾キー（-I / IP）の後は追加入力不可
+        const terminalKeys = ["-I", "IP"];
+        if (terminalKeys.some(t => inputValue.endsWith(t))) {
+          showNotification("これ以上入力できません");
+          return;
+        }
+
         if (inputValue === "") {
-          if (key !== "HK" && key !== "HK-R") {
-            showNotification("最初は HK または HK-R を選んでください");
+          if (!isPrefix) {
+            showNotification("最初は HK / HK-R / HKP を選んでください");
             return;
           }
         } else {
-          if ((inputValue.startsWith("HK") && key === "HK-R") ||
-              (inputValue.startsWith("HK-R") && key === "HK")) {
-            showNotification("HK と HK-R は同時に使えません");
+          // プレフィックスキーは最初のみ
+          if (isPrefix) {
+            showNotification("HK / HK-R / HKP は最初のみ入力できます");
             return;
           }
-          if (key === "HK" || key === "HK-R") {
-            showNotification("HK/HK-R は最初のみ入力できます");
-            return;
-          }
-          // HK-Rが選択されている場合、'-'を押せないようにする
-          if (inputValue.startsWith("HK-R") && key === "-") {
+
+          // 現在のプレフィックスを特定
+          const currentPrefix = prefixKeys.find(p => inputValue.startsWith(p)) || "";
+
+          // HK-R の後は '-' を禁止
+          if (currentPrefix === "HK-R" && key === "-") {
             showNotification("HK-R の後に - は入力できません");
             return;
           }
-          // すでにハイフンがある場合、'-'を押せないようにする
-          if (inputValue.includes("-") && key === "-") {
+
+          // すでにハイフンがある場合、'-' を禁止（-I は許可）
+          const valueAfterPrefix = inputValue.slice(currentPrefix.length);
+          if (valueAfterPrefix.includes("-") && key === "-") {
             showNotification("ハイフンは1つしか入力できません");
             return;
           }
