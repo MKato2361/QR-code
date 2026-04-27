@@ -72,12 +72,6 @@
       min-height: 100vh;
       transition: background-color 0.3s, color 0.3s;
     }
-    header {
-      padding: 1.5em;
-      font-size: 1.6em;
-      font-weight: 700;
-      color: var(--header-color);
-    }
     main {
       flex: 1;
       display: flex;
@@ -85,7 +79,7 @@
       align-items: center;
       width: 100%;
       max-width: 500px;
-      padding: 1em;
+      padding: 0.4em 1em 1em;
       background: var(--main-bg);
       transition: background-color 0.3s;
     }
@@ -193,7 +187,6 @@
   </style>
 </head>
 <body>
-  <header>管理番号QR作成</header>
   <main>
     <!-- QRコード（初期は非表示） -->
     <div id="qrcode"></div>
@@ -202,6 +195,9 @@
 
     <!-- 入力欄 -->
     <div id="display"></div>
+
+    <!-- QRコード作成ボタン -->
+    <button id="ok-btn">QRコード作成</button>
 
     <!-- 電卓風キーボード -->
     <div class="keyboard">
@@ -224,9 +220,6 @@
       <div class="key hk" data-key="-I">-I</div>
       <div class="key hk" data-key="IP">IP</div>
     </div>
-
-    <!-- ボタン -->
-    <button id="ok-btn">QRコード作成</button>
   </main>
   
   <!-- 新しい通知バー -->
